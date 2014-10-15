@@ -133,6 +133,7 @@ allprojects {
     group = 'org.gradle'
 
     repositories {
+        xmvn()
         maven { url 'https://repo.gradle.org/gradle/libs' }
     }
 }
