@@ -41,6 +41,7 @@ apply plugin: 'javascript-base'
 apply plugin: 'org.asciidoctor.convert'
 
 repositories {
+    xmvn()
     javaScript.googleApis()
 
     ivy {
