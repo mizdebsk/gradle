@@ -5,6 +5,7 @@ configurations {
 }
 
 repositories {
+    xmvn()
     javaScript.googleApis()
 }
 
