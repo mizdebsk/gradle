@@ -121,10 +121,10 @@ libraries.maven3 = dependencies.module("org.apache.maven:maven-core:3.0.4") {
     dependency "org.apache.maven:maven-plugin-api:3.0.4@jar"
     dependency "org.apache.maven:maven-aether-provider:3.0.4@jar"
 
-    dependency 'org.apache.maven.wagon:wagon-file:2.4@jar'
-    dependency 'org.apache.maven.wagon:wagon-http:2.4@jar'
-    dependency 'org.apache.maven.wagon:wagon-provider-api:2.4@jar'
-    dependency 'org.apache.maven.wagon:wagon-http-shared4:2.4@jar'
+    dependency 'org.apache.maven.wagon:wagon-file:2.8@jar'
+    dependency 'org.apache.maven.wagon:wagon-http:2.8@jar'
+    dependency 'org.apache.maven.wagon:wagon-provider-api:2.8@jar'
+    dependency 'org.apache.maven.wagon:wagon-http-shared:2.8@jar'
 
     //eather:
     dependency "org.sonatype.aether:aether-api:1.13.1@jar"
