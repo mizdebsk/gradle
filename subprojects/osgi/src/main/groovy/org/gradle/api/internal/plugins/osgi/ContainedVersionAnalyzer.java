@@ -16,7 +16,7 @@
 
 package org.gradle.api.internal.plugins.osgi;
 
-import aQute.bnd.osgi.Analyzer;
+import aQute.lib.osgi.Analyzer;
 
 public class ContainedVersionAnalyzer extends Analyzer {
 }
