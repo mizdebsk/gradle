@@ -16,18 +16,21 @@
 
 package org.gradle.api.plugins.jetty.internal;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.RequestLog;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ContextHandlerCollection;
-import org.mortbay.jetty.handler.DefaultHandler;
-import org.mortbay.jetty.handler.HandlerCollection;
-import org.mortbay.jetty.handler.RequestLogHandler;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.security.UserRealm;
-import org.mortbay.jetty.webapp.WebAppContext;
-import org.mortbay.resource.Resource;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
+import org.eclipse.jetty.security.LoginService;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +42,7 @@ public class Jetty6PluginServer implements JettyPluginServer {
 
     public static final int DEFAULT_MAX_IDLE_TIME = 30000;
     private Server server;
+    private List<LoginService> loginServices;
     private ContextHandlerCollection contexts; //the list of ContextHandlers
     HandlerCollection handlers; //the list of lists of Handlers
     private RequestLogHandler requestLogHandler; //the request log handler
@@ -63,7 +67,7 @@ public class Jetty6PluginServer implements JettyPluginServer {
 
         for (int i = 0; i < connectors.length; i++) {
             Connector connector = (Connector) connectors[i];
-            LOGGER.debug("Setting Connector: " + connector.getClass().getName() + " on port " + connector.getPort());
+            LOGGER.debug("Setting Connector: " + connector.getClass().getName());
             this.server.addConnector(connector);
         }
     }
@@ -83,8 +87,10 @@ public class Jetty6PluginServer implements JettyPluginServer {
             return;
         }
 
+        this.loginServices = Arrays.asList((LoginService[]) realms);
+
         for (int i = 0; i < realms.length; i++) {
-            this.server.addUserRealm((UserRealm) realms[i]);
+            this.server.addBean((LoginService) realms[i]);
         }
     }
 
@@ -92,7 +98,7 @@ public class Jetty6PluginServer implements JettyPluginServer {
      * @see org.gradle.api.plugins.jetty.internal.JettyPluginServer#getUserRealms()
      */
     public Object[] getUserRealms() {
-        return this.server.getUserRealms();
+        return this.loginServices.toArray();
     }
 
     public void setRequestLog(Object requestLog) {
@@ -151,9 +157,9 @@ public class Jetty6PluginServer implements JettyPluginServer {
     }
 
     public Object createDefaultConnector(int port) throws Exception {
-        SelectChannelConnector connector = new SelectChannelConnector();
+        ServerConnector connector = new ServerConnector(server);
         connector.setPort(port);
-        connector.setMaxIdleTime(DEFAULT_MAX_IDLE_TIME);
+        connector.setIdleTimeout(DEFAULT_MAX_IDLE_TIME);
 
         return connector;
     }

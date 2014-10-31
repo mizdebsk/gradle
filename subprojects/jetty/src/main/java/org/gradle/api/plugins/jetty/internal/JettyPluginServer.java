@@ -16,7 +16,7 @@
 
 package org.gradle.api.plugins.jetty.internal;
 
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * JettyPluginServer
