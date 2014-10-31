@@ -19,12 +19,11 @@ package org.gradle.api.plugins.jetty.internal;
 import java.io.File;
 import java.util.List;
 
-import org.mortbay.jetty.plus.webapp.EnvConfiguration;
-import org.mortbay.jetty.webapp.Configuration;
-import org.mortbay.jetty.webapp.JettyWebXmlConfiguration;
-import org.mortbay.jetty.webapp.TagLibConfiguration;
-import org.mortbay.jetty.webapp.WebAppContext;
-import org.mortbay.jetty.webapp.WebInfConfiguration;
+import org.eclipse.jetty.plus.webapp.EnvConfiguration;
+import org.eclipse.jetty.webapp.Configuration;
+import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
 
 /**
  * Jetty6PluginWebAppContext
@@ -37,9 +36,8 @@ public class JettyPluginWebAppContext extends WebAppContext {
     private EnvConfiguration envConfig = new EnvConfiguration();
     private JettyConfiguration mvnConfig = new JettyConfiguration();
     private JettyWebXmlConfiguration jettyWebConfig = new JettyWebXmlConfiguration();
-    private TagLibConfiguration tagConfig = new TagLibConfiguration();
     private Configuration[] configs = new Configuration[]{
-            webInfConfig, envConfig, mvnConfig, jettyWebConfig, tagConfig
+            webInfConfig, envConfig, mvnConfig, jettyWebConfig
     };
 
     public JettyPluginWebAppContext() {
@@ -108,12 +106,10 @@ public class JettyPluginWebAppContext extends WebAppContext {
     }
 
     public void doStart() throws Exception {
-        setShutdown(false);
         super.doStart();
     }
 
     public void doStop() throws Exception {
-        setShutdown(true);
         //just wait a little while to ensure no requests are still being processed
         Thread.sleep(500L);
         super.doStop();
