@@ -29,11 +29,11 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.classpath.DefaultClassPath;
 import org.gradle.logging.ProgressLogger;
 import org.gradle.logging.ProgressLoggerFactory;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.RequestLog;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.security.UserRealm;
-import org.mortbay.util.Scanner;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.security.LoginService;
+import org.eclipse.jetty.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +110,7 @@ public abstract class AbstractJettyRunTask extends ConventionTask {
     /**
      * List of security realms to set up. Optional.
      */
-    private UserRealm[] userRealms;
+    private LoginService[] userRealms;
 
     /**
      * A RequestLog implementation to use for the webapp at runtime. Optional.
@@ -313,7 +313,7 @@ public abstract class AbstractJettyRunTask extends ConventionTask {
     /**
      * Run a scanner thread on the given list of files and directories, calling stop/start on the given list of LifeCycle objects if any of the watched files change.
      */
-    private void startScanner() {
+    private void startScanner() throws Exception {
 
         // check if scanning is enabled
         if (getScanIntervalSeconds() <= 0) {
@@ -536,11 +536,11 @@ public abstract class AbstractJettyRunTask extends ConventionTask {
         this.connectors = connectors;
     }
 
-    public UserRealm[] getUserRealms() {
+    public LoginService[] getUserRealms() {
         return userRealms;
     }
 
-    public void setUserRealms(UserRealm[] userRealms) {
+    public void setUserRealms(LoginService[] userRealms) {
         this.userRealms = userRealms;
     }
 

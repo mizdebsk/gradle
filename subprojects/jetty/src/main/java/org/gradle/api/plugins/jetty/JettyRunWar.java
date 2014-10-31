@@ -17,8 +17,8 @@
 package org.gradle.api.plugins.jetty;
 
 import org.gradle.api.plugins.jetty.internal.Jetty6PluginServer;
-import org.mortbay.util.Scanner;
-import org.mortbay.xml.XmlConfiguration;
+import org.eclipse.jetty.util.Scanner;
+import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.gradle.api.tasks.InputFile;
@@ -51,7 +51,7 @@ public class JettyRunWar extends AbstractJettyRunTask {
     }
 
     /* (non-Javadoc)
-    * @see org.mortbay.jetty.plugin.util.AbstractJettyTask#configureScanner()
+    * @see org.eclipse.jetty.plugin.util.AbstractJettyTask#configureScanner()
     */
     public void configureScanner() {
         List<File> scanList = new ArrayList<File>();
