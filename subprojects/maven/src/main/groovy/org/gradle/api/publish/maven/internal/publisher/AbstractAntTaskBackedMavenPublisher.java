@@ -16,9 +16,10 @@
 
 package org.gradle.api.publish.maven.internal.publisher;
 
-import org.apache.maven.artifact.ant.AttachedArtifact;
-import org.apache.maven.artifact.ant.InstallDeployTaskSupport;
-import org.apache.maven.artifact.ant.Pom;
+import org.apache.tools.ant.Project;
+import org.eclipse.aether.internal.ant.tasks.AbstractDistTask;
+import org.eclipse.aether.internal.ant.types.Artifact;
+import org.eclipse.aether.internal.ant.types.Pom;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.publication.maven.internal.ant.EmptyMavenSettingsSupplier;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-abstract public class AbstractAntTaskBackedMavenPublisher<T extends InstallDeployTaskSupport> implements MavenPublisher {
+abstract public class AbstractAntTaskBackedMavenPublisher<T extends AbstractDistTask> implements MavenPublisher {
     private final Factory<LoggingManagerInternal> loggingManagerFactory;
 
     private static Logger logger = LoggerFactory.getLogger(AbstractAntTaskBackedMavenPublisher.class);
@@ -46,11 +47,12 @@ abstract public class AbstractAntTaskBackedMavenPublisher<T extends InstallDeplo
 
     public void publish(MavenNormalizedPublication publication, MavenArtifactRepository artifactRepository) {
         logger.info("Publishing to repository {}", artifactRepository);
+        Project project = AntUtil.createProject();
         T deployTask = createDeployTask();
-        deployTask.setProject(AntUtil.createProject());
+        deployTask.setProject(project);
 
         MavenSettingsSupplier mavenSettingsSupplier = new EmptyMavenSettingsSupplier();
-        mavenSettingsSupplier.supply(deployTask);
+        mavenSettingsSupplier.supply(project);
 
         postConfigure(deployTask, artifactRepository);
         addPomAndArtifacts(deployTask, publication);
@@ -63,27 +65,23 @@ abstract public class AbstractAntTaskBackedMavenPublisher<T extends InstallDeplo
 
     abstract protected T createDeployTask();
 
-    private void addPomAndArtifacts(InstallDeployTaskSupport installOrDeployTask, MavenNormalizedPublication publication) {
+    private void addPomAndArtifacts(AbstractDistTask task, MavenNormalizedPublication publication) {
         Pom pom = new Pom();
-        pom.setProject(installOrDeployTask.getProject());
+        pom.setProject(task.getProject());
         pom.setFile(publication.getPomFile());
-        installOrDeployTask.addPom(pom);
-
-        MavenArtifact mainArtifact = publication.getMainArtifact();
-        installOrDeployTask.setFile(mainArtifact == null ? publication.getPomFile() : mainArtifact.getFile());
+        task.addPom(pom);
 
         for (MavenArtifact mavenArtifact : publication.getArtifacts()) {
-            if (mavenArtifact == mainArtifact) {
-                continue;
-            }
-            AttachedArtifact attachedArtifact = installOrDeployTask.createAttach();
-            attachedArtifact.setClassifier(GUtil.elvis(mavenArtifact.getClassifier(), ""));
-            attachedArtifact.setType(GUtil.elvis(mavenArtifact.getExtension(), ""));
-            attachedArtifact.setFile(mavenArtifact.getFile());
+            Artifact artifact = new Artifact();
+            artifact.setProject(task.getProject());
+            artifact.setClassifier(GUtil.elvis(mavenArtifact.getClassifier(), ""));
+            artifact.setType(GUtil.elvis(mavenArtifact.getExtension(), ""));
+            artifact.setFile(mavenArtifact.getFile());
+            task.addArtifact(artifact);
         }
     }
 
-    private void execute(InstallDeployTaskSupport deployTask) {
+    private void execute(AbstractDistTask deployTask) {
         LoggingManagerInternal loggingManager = loggingManagerFactory.create();
         loggingManager.captureStandardOutput(LogLevel.INFO).start();
         try {

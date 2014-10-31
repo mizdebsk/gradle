@@ -15,9 +15,9 @@
  */
 package org.gradle.api.publication.maven.internal.ant;
 
-import org.apache.maven.artifact.ant.InstallDeployTaskSupport;
-import org.apache.maven.artifact.ant.InstallTask;
 import org.apache.tools.ant.Project;
+import org.eclipse.aether.internal.ant.tasks.AbstractDistTask;
+import org.eclipse.aether.internal.ant.tasks.Install;
 import org.gradle.api.artifacts.maven.PomFilterContainer;
 import org.gradle.api.publication.maven.internal.ArtifactPomContainer;
 import org.gradle.logging.LoggingManagerInternal;
@@ -28,13 +28,13 @@ public class BaseMavenInstaller extends AbstractMavenResolver {
         mavenSettingsSupplier = new MaybeUserMavenSettingsSupplier();
     }
 
-    protected InstallDeployTaskSupport createPreConfiguredTask(Project project) {
-        InstallTask installTask = createTask();
+    protected AbstractDistTask createPreConfiguredTask(Project project) {
+        Install installTask = createTask();
         installTask.setProject(project);
         return installTask;
     }
 
-    protected CustomInstallTask createTask() {
-        return new CustomInstallTask();
+    protected Install createTask() {
+        return new Install();
     }
 }

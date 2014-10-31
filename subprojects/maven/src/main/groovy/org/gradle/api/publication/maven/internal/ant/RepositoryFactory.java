@@ -15,12 +15,14 @@
  */
 package org.gradle.api.publication.maven.internal.ant;
 
+import java.util.UUID;
+
+import org.eclipse.aether.internal.ant.types.Authentication;
+import org.eclipse.aether.internal.ant.types.Proxy;
+import org.eclipse.aether.internal.ant.types.RemoteRepository;
+
 import groovy.swing.factory.BeanFactory;
 import groovy.util.FactoryBuilderSupport;
-import org.apache.maven.artifact.ant.Authentication;
-import org.apache.maven.artifact.ant.Proxy;
-import org.apache.maven.artifact.ant.RemoteRepository;
-import org.apache.maven.artifact.ant.RepositoryPolicy;
 
 public class RepositoryFactory extends BeanFactory {
     public RepositoryFactory(Class klass) {
@@ -32,20 +34,21 @@ public class RepositoryFactory extends BeanFactory {
     }
 
     public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
+        getRepository(parent).setId(UUID.randomUUID().toString());
         if (child instanceof Authentication) {
             getRepository(parent).addAuthentication((Authentication) child);
         } else if (child instanceof Proxy) {
             getRepository(parent).addProxy((Proxy) child);
-        } else if (child instanceof RepositoryPolicy) {
+        } else if (child instanceof RemoteRepository.Policy) {
             if (builder.getCurrentName().equals("snapshots")) {
-                getRepository(parent).addSnapshots((RepositoryPolicy) child);
+                getRepository(parent).addSnapshots((RemoteRepository.Policy) child);
             } else {
-                getRepository(parent).addReleases((RepositoryPolicy) child);
+                getRepository(parent).addReleases((RemoteRepository.Policy) child);
             }
         }
     }
 
-    private RemoteRepository getRepository(Object parent) {
-        return (RemoteRepository) parent;
+    private CustomRemoteRepository getRepository(Object parent) {
+        return (CustomRemoteRepository) parent;
     }
 }

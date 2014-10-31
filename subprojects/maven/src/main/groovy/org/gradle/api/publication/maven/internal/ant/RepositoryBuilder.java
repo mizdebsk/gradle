@@ -15,18 +15,28 @@
  */
 package org.gradle.api.publication.maven.internal.ant;
 
+import org.eclipse.aether.internal.ant.types.Authentication;
+import org.eclipse.aether.internal.ant.types.Proxy;
+import org.eclipse.aether.internal.ant.types.RemoteRepository;
+
 import groovy.util.FactoryBuilderSupport;
-import org.apache.maven.artifact.ant.Authentication;
-import org.apache.maven.artifact.ant.Proxy;
-import org.apache.maven.artifact.ant.RemoteRepository;
-import org.apache.maven.artifact.ant.RepositoryPolicy;
 
 public class RepositoryBuilder extends FactoryBuilderSupport {
     public RepositoryBuilder() {
         registerFactory("repository", new RepositoryFactory(RemoteRepository.class));
-        registerBeanFactory("authentication", Authentication.class);
+        registerBeanFactory("authentication", CustomAuthentication.class);
         registerBeanFactory("proxy", Proxy.class);
-        registerBeanFactory("snapshots", RepositoryPolicy.class);
-        registerBeanFactory("releases", RepositoryPolicy.class);
+        registerBeanFactory("snapshots", RemoteRepository.Policy.class);
+        registerBeanFactory("releases", RemoteRepository.Policy.class);
+    }
+
+    public static class CustomAuthentication extends Authentication {
+        public String getUserName() {
+            return getUsername();
+        }
+
+        public void setUserName(String userName) {
+            setUsername(userName);
+        }
     }
 }

@@ -16,53 +16,36 @@
 
 package org.gradle.api.publish.maven.internal.publisher;
 
-import org.apache.maven.artifact.ant.RemoteRepository;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.repository.DefaultArtifactRepository;
-import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.eclipse.aether.internal.ant.AntRepoSys;
+import org.eclipse.aether.internal.ant.tasks.Deploy;
+import org.eclipse.aether.internal.ant.types.LocalRepository;
+import org.eclipse.aether.internal.ant.types.RemoteRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
-import org.gradle.api.publication.maven.internal.ant.CustomDeployTask;
 import org.gradle.internal.Factory;
 import org.gradle.logging.LoggingManagerInternal;
 
 import java.io.File;
 
-public class AntTaskBackedMavenPublisher extends AbstractAntTaskBackedMavenPublisher<CustomDeployTask> {
+public class AntTaskBackedMavenPublisher extends AbstractAntTaskBackedMavenPublisher<Deploy> {
     public AntTaskBackedMavenPublisher(Factory<LoggingManagerInternal> loggingManagerFactory, Factory<File> temporaryDirFactory) {
         super(loggingManagerFactory, temporaryDirFactory);
     }
 
-    protected void postConfigure(CustomDeployTask task, MavenArtifactRepository artifactRepository) {
+    protected void postConfigure(Deploy task, MavenArtifactRepository artifactRepository) {
         addRepository(task, artifactRepository);
     }
 
-    protected CustomDeployTask createDeployTask() {
-        CustomDeployTask deployTask = new DeployTask(temporaryDirFactory);
-        deployTask.setUniqueVersion(true);
-        return deployTask;
+    protected Deploy createDeployTask() {
+        Deploy task = new Deploy();
+        LocalRepository localRepository = new LocalRepository(task);
+        localRepository.setDir(temporaryDirFactory.create());
+        AntRepoSys repoSys = AntRepoSys.getInstance(task.getProject());
+        repoSys.setLocalRepository(localRepository);
+        return task;
     }
 
-    private void addRepository(CustomDeployTask deployTask, MavenArtifactRepository artifactRepository) {
+    private void addRepository(Deploy deployTask, MavenArtifactRepository artifactRepository) {
         RemoteRepository mavenRepository = new MavenRemoteRepositoryFactory(artifactRepository).create();
-        deployTask.addRemoteRepository(mavenRepository);
-    }
-
-    private static class DeployTask extends CustomDeployTask {
-        private final Factory<File> tmpDirFactory;
-
-        public DeployTask(Factory<File> tmpDirFactory) {
-            this.tmpDirFactory = tmpDirFactory;
-        }
-
-        @Override
-        protected ArtifactRepository createLocalArtifactRepository() {
-            ArtifactRepositoryLayout repositoryLayout = (ArtifactRepositoryLayout) lookup(ArtifactRepositoryLayout.ROLE, getLocalRepository().getLayout());
-            return new DefaultArtifactRepository("local", tmpDirFactory.create().toURI().toString(), repositoryLayout);
-        }
-
-        @Override
-        protected void updateRepositoryWithSettings(RemoteRepository repository) {
-            // Do nothing
-        }
+        deployTask.addRemoteRepo(mavenRepository);
     }
 }

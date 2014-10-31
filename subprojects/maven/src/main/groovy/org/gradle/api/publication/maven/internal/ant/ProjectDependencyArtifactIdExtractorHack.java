@@ -17,7 +17,7 @@
 package org.gradle.api.publication.maven.internal.ant;
 
 import com.google.common.collect.Lists;
-import org.apache.maven.project.MavenProject;
+
 import org.gradle.api.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ProjectDependency;
@@ -26,6 +26,7 @@ import org.gradle.api.artifacts.maven.MavenResolver;
 import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.plugins.BasePluginConvention;
 import org.gradle.api.tasks.Upload;
+import org.apache.maven.project.MavenProject;
 import org.testng.internal.annotations.Sets;
 
 import java.util.Collection;

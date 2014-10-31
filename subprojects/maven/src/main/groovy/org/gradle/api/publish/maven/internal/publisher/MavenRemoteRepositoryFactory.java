@@ -16,8 +16,8 @@
 
 package org.gradle.api.publish.maven.internal.publisher;
 
-import org.apache.maven.artifact.ant.Authentication;
-import org.apache.maven.artifact.ant.RemoteRepository;
+import org.eclipse.aether.internal.ant.types.Authentication;
+import org.eclipse.aether.internal.ant.types.RemoteRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.PasswordCredentials;
 import org.gradle.internal.Factory;
@@ -40,7 +40,7 @@ class MavenRemoteRepositoryFactory implements Factory<RemoteRepository> {
 
         if (username != null || password != null) {
             Authentication authentication = new Authentication();
-            authentication.setUserName(username);
+            authentication.setUsername(username);
             authentication.setPassword(password);
             remoteRepository.addAuthentication(authentication);
         }

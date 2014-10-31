@@ -160,11 +160,7 @@ public class DefaultMavenPom implements MavenPom {
 
     public DefaultMavenPom getEffectivePom() {
         DefaultMavenPom effectivePom = new DefaultMavenPom(null, this.scopeMappings, pomDependenciesConverter, fileResolver);
-        try {
-            effectivePom.setMavenProject((MavenProject) mavenProject.clone());
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        effectivePom.setMavenProject((MavenProject) mavenProject.clone());
         effectivePom.getDependencies().addAll(getGeneratedDependencies());
         effectivePom.withXmlActions = withXmlActions;
         whenConfiguredActions.execute(effectivePom);

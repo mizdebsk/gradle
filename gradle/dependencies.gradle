@@ -76,8 +76,28 @@ libraries.commons_httpclient = dependencies.module('org.apache.httpcomponents:ht
     dependency "org.samba.jcifs:jcifs:1.3.17@jar"
 }
 
-libraries.maven_ant_tasks = dependencies.module("org.apache.maven:maven-ant-tasks:2.1.3") {
-    libraries.ant
+libraries.maven_ant_tasks = dependencies.module("org.eclipse.aether:aether-ant-tasks:1.0.0.v20140518") {
+    dependency "org.eclipse.aether:aether-api:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-util:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-impl:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-spi:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-connector-basic:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-transport-classpath:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-transport-file:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-transport-http:1.0.0.v20140518@jar"
+    dependency "org.apache.maven:maven-aether-provider:3.1.1@jar"
+    dependency "org.apache.maven:maven-model:3.1.1@jar"
+    dependency "org.apache.maven:maven-model-builder:3.1.1@jar"
+    dependency "org.apache.maven:maven-repository-metadata:3.1.1@jar"
+    dependency "org.codehaus.plexus:plexus-utils:2.1@jar"
+    dependency "org.apache.maven:maven-settings-builder:3.1.1@jar"
+    dependency "org.apache.maven:maven-settings:3.1.1@jar"
+    dependency "org.sonatype.plexus:plexus-sec-dispatcher:1.3@jar"
+    dependency "org.sonatype.plexus:plexus-cipher:1.7@jar"
+    dependency "org.codehaus.plexus:plexus-interpolation:1.16@jar"
+    dependency "org.eclipse.sisu:org.eclipse.sisu.plexus:0.1.1@jar"
+    dependency libraries.ant
+    dependency libraries.commons_httpclient
 }
 
 libraries += [
@@ -98,9 +118,9 @@ libraries += [
         jsoup:'org.jsoup:jsoup:1.6.3'
 ]
 
-libraries.maven3 = dependencies.module("org.apache.maven:maven-core:3.0.4") {
-    dependency "org.apache.maven:maven-settings:3.0.4@jar"
-    dependency "org.apache.maven:maven-settings-builder:3.0.4@jar"
+libraries.maven3 = dependencies.module("org.apache.maven:maven-core:3.1.1") {
+    dependency "org.apache.maven:maven-settings:3.1.1@jar"
+    dependency "org.apache.maven:maven-settings-builder:3.1.1@jar"
 
     //plexus:
     dependency "org.codehaus.plexus:plexus-utils:2.0.6@jar"
@@ -114,27 +134,28 @@ libraries.maven3 = dependencies.module("org.apache.maven:maven-core:3.0.4") {
     dependency "org.sonatype.plexus:plexus-sec-dispatcher:1.3@jar"
 
     //core:
-    dependency "org.apache.maven:maven-core:3.0.4@jar"
-    dependency "org.apache.maven:maven-model-builder:3.0.4@jar"
-    dependency "org.apache.maven:maven-model:3.0.4@jar"
+    dependency "org.apache.maven:maven-core:3.1.1@jar"
+    dependency "org.apache.maven:maven-model-builder:3.1.1@jar"
+    dependency "org.apache.maven:maven-model:3.1.1@jar"
 
     //somewhat core:
-    dependency "org.apache.maven:maven-artifact:3.0.4@jar"
-    dependency "org.apache.maven:maven-compat:3.0.4@jar"
-    dependency "org.apache.maven:maven-repository-metadata:3.0.4@jar"
-    dependency "org.apache.maven:maven-plugin-api:3.0.4@jar"
-    dependency "org.apache.maven:maven-aether-provider:3.0.4@jar"
+    dependency "org.apache.maven:maven-artifact:3.1.1@jar"
+    dependency "org.apache.maven:maven-compat:3.1.1@jar"
+    dependency "org.apache.maven:maven-repository-metadata:3.1.1@jar"
+    dependency "org.apache.maven:maven-plugin-api:3.1.1@jar"
+    dependency "org.apache.maven:maven-aether-provider:3.1.1@jar"
 
     dependency 'org.apache.maven.wagon:wagon-http:2.8@jar'
     dependency 'org.apache.maven.wagon:wagon-provider-api:2.8@jar'
     dependency 'org.apache.maven.wagon:wagon-http-shared:2.8@jar'
 
     //eather:
-    dependency "org.sonatype.aether:aether-api:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-impl:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-spi:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-util:1.13.1@jar"
-    dependency 'org.sonatype.aether:aether-connector-wagon:1.13.1@jar'
+    dependency "org.eclipse.aether:aether-api:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-impl:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-spi:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-util:1.0.0.v20140518@jar"
+    dependency 'org.eclipse.aether:aether-connector-basic:1.0.0.v20140518@jar'
+    dependency 'org.eclipse.aether:aether-transport-wagon:1.0.0.v20140518@jar'
 }
 
 libraries.spock = [

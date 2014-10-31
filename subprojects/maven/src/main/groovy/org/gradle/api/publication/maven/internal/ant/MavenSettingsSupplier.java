@@ -16,9 +16,9 @@
 
 package org.gradle.api.publication.maven.internal.ant;
 
-import org.apache.maven.artifact.ant.InstallDeployTaskSupport;
+import org.apache.tools.ant.Project;
 
 public interface MavenSettingsSupplier {
     void done();
-    void supply(InstallDeployTaskSupport installDeployTaskSupport);
+    void supply(Project project);
 }
