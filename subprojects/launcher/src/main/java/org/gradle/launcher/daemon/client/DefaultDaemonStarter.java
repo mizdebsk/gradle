@@ -65,6 +65,8 @@ public class DefaultDaemonStarter implements DaemonStarter {
         DefaultModuleRegistry registry = new DefaultModuleRegistry();
         Set<File> bootstrapClasspath = new LinkedHashSet<File>();
         bootstrapClasspath.addAll(registry.getModule("gradle-launcher").getImplementationClasspath().getAsFiles());
+        bootstrapClasspath.addAll(registry.getModule("gradle-core").getImplementationClasspath().getAsFiles());
+        bootstrapClasspath.addAll(registry.getModule("gradle-base-services").getImplementationClasspath().getAsFiles());
         if (registry.getGradleHome() == null) {
             // Running from the classpath - chuck in everything we can find
             bootstrapClasspath.addAll(registry.getFullClasspath());

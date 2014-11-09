@@ -91,18 +91,7 @@ public class DefaultModuleRegistry implements ModuleRegistry, GradleDistribution
     }
 
     private static File findDistDir() {
-        File codeSource = ClasspathUtil.getClasspathForClass(DefaultModuleRegistry.class);
-        if (codeSource.isFile()) {
-            // Loaded from a JAR - let's see if its in the lib directory, and there's a lib/plugins directory
-            File libDir = codeSource.getParentFile();
-            if (!libDir.getName().equals("lib") || !new File(libDir, "plugins").isDirectory()) {
-                return null;
-            }
-            return libDir.getParentFile();
-        } else {
-            // Loaded from a classes dir - assume we're running from the ide or tests
-            return null;
-        }
+        return new File("/usr/share/gradle");
     }
 
     /**
