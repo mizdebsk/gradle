@@ -71,6 +71,9 @@ public class ManifestUtil {
                 return EMPTY;
             }
             String classpathEntry = manifest.getMainAttributes().getValue("Class-Path");
+            if (classpathEntry == null) {
+                classpathEntry = manifest.getMainAttributes().getValue("X-Gradle-Class-Path");
+            }
             if (classpathEntry == null || classpathEntry.trim().length() == 0) {
                 return EMPTY;
             }

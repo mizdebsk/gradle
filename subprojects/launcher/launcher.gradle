@@ -49,6 +49,9 @@ task configureJar {
 jar {
     dependsOn configureJar
     manifest.mainAttributes('Main-Class': "org.gradle.launcher.GradleMain")
+    doFirst {
+        jar.manifest.mainAttributes('X-Gradle-Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
+    }
 }
 
 task startScripts(type: GradleStartScriptGenerator) {
