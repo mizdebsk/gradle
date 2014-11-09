@@ -18,6 +18,7 @@ package org.gradle.api.internal.artifacts.dsl;
 import groovy.lang.Closure;
 import org.gradle.api.Action;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.artifacts.repositories.FlatDirectoryArtifactRepository;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
@@ -40,6 +41,7 @@ public class DefaultRepositoryHandler extends DefaultArtifactRepositoryContainer
     public static final String FLAT_DIR_DEFAULT_NAME = "flatDir";
     private static final String MAVEN_REPO_DEFAULT_NAME = "maven";
     private static final String IVY_REPO_DEFAULT_NAME = "ivy";
+    private static final String XMVN_REPO_DEFAULT_NAME = "xmvn";
 
     private final BaseRepositoryFactory repositoryFactory;
 
@@ -101,5 +103,8 @@ public class DefaultRepositoryHandler extends DefaultArtifactRepositoryContainer
         return ivy(new ClosureBackedAction<IvyArtifactRepository>(closure));
     }
 
+    public ArtifactRepository xmvn() {
+        return addRepository(repositoryFactory.createXMvnResolver(), XMVN_REPO_DEFAULT_NAME);
+    }
 
 }
