@@ -17,6 +17,7 @@
 package org.gradle.api.internal.artifacts.repositories;
 
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.artifacts.repositories.FlatDirectoryArtifactRepository;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
@@ -34,6 +35,12 @@ import org.gradle.internal.resource.local.FileStore;
 import org.gradle.internal.resource.local.LocallyAvailableResourceFinder;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class DefaultBaseRepositoryFactory implements BaseRepositoryFactory {
     private final LocalMavenRepositoryLocator localMavenRepositoryLocator;
@@ -95,5 +102,42 @@ public class DefaultBaseRepositoryFactory implements BaseRepositoryFactory {
     public MavenArtifactRepository createMavenRepository() {
         return instantiator.newInstance(DefaultMavenArtifactRepository.class, fileResolver, transportFactory,
                 locallyAvailableResourceFinder, instantiator, artifactFileStore, pomParser);
+    }
+
+    public ArtifactRepository createXMvnResolver() {
+        // Check if XMvn connector is available and inform user if it's not.
+        // This is more user-friendly as it prevents cryptic stack traces.
+        if (!new File("/usr/share/java/xmvn/xmvn-connector-gradle.jar").exists())
+            throw new RuntimeException("Local mode for Gradle is not available because XMvn Gradle connector is not installed. "
+                                       + "To use local mode you need to install gradle-local package.");
+
+        // XMvn connector for Gradle is an external library and it is not
+        // included in default Gradle classpath. Before it can be accessed
+        // we need to add its implementation JARs to current class loader.
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            Set<URL> newUrls = new LinkedHashSet<URL>();
+            newUrls.add(new File("/usr/share/java/xmvn/xmvn-api.jar").toURI().toURL());
+            newUrls.add(new File("/usr/share/java/xmvn/xmvn-launcher.jar").toURI().toURL());
+            newUrls.add(new File("/usr/share/java/xmvn/xmvn-connector-gradle.jar").toURI().toURL());
+            Method getterMethod = classLoader.getClass().getMethod("getURLs");
+            Object[] currentUrls = (Object[]) getterMethod.invoke(classLoader);
+            newUrls.removeAll(Arrays.asList(currentUrls));
+            Method adderMethod = classLoader.getClass().getMethod("addURLs", Iterable.class);
+            adderMethod.invoke(classLoader, newUrls);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Unable to inject XMvn JARs to Gralde class loader", e);
+        } catch (MalformedURLException e) {
+            // Should not happen
+            throw new RuntimeException(e);
+        }
+
+        try {
+            String xmvnConnectorRole = "org.fedoraproject.xmvn.connector.gradle.GradleResolver";
+            Class xmvnClass = Class.forName(xmvnConnectorRole);
+            return (ArtifactRepository) xmvnClass.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to inject XMvn resolver", e);
+        }
     }
 }
