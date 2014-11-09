@@ -27,13 +27,6 @@ integTestTasks.all {
     }
 }
 
-jar {
-    manifest.mainAttributes('Main-Class': "org.gradle.launcher.GradleMain")
-    doFirst {
-        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
-    }
-}
-
 task startScripts(type: StartScriptGenerator) {
     startScriptsDir = new File("$buildDir/startScripts")
     classpath = configurations.startScriptGenerator
