@@ -15,6 +15,7 @@
  */
 package org.gradle.api.internal.artifacts;
 
+import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.artifacts.repositories.FlatDirectoryArtifactRepository;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
@@ -34,4 +35,6 @@ public interface BaseRepositoryFactory {
     IvyArtifactRepository createIvyRepository();
 
     MavenArtifactRepository createMavenRepository();
+
+    ArtifactRepository createXMvnResolver();
 }
