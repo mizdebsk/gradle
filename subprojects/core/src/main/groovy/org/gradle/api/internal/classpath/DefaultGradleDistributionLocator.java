@@ -69,13 +69,7 @@ public class DefaultGradleDistributionLocator implements GradleDistributionLocat
     };
 
     private static File findDistDir(Class<?> clazz) {
-        File codeSource = ClasspathUtil.getClasspathForClass(clazz);
-        if (codeSource.isFile()) {
-            return determineDistRootDir(codeSource);
-        } else {
-            // Loaded from a classes dir - assume we're running from the ide or tests
-            return null;
-        }
+        return new File("/usr/share/gradle");
     }
 
     /**

@@ -35,7 +35,7 @@ integTestTasks.all {
 jar {
     manifest.mainAttributes('Main-Class': "org.gradle.launcher.GradleMain")
     doFirst {
-        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
+        jar.manifest.mainAttributes('X-Gradle-Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
     }
 }
 

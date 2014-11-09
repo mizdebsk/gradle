@@ -69,11 +69,7 @@ public class DefaultDaemonStarter implements DaemonStarter {
         ModuleRegistry registry = new DefaultModuleRegistry();
         ClassPath classpath;
         List<File> searchClassPath;
-        if (new DefaultGradleDistributionLocator().getGradleHome() != null) {
-            // When running from a Gradle distro, only need launcher jar. The daemon can find everything from there.
-            classpath = registry.getModule("gradle-launcher").getImplementationClasspath();
-            searchClassPath = Collections.emptyList();
-        } else {
+        {
             // When not running from a Gradle distro, need runtime impl for launcher plus the search path to look for other modules
             classpath = new DefaultClassPath();
             for (Module module : registry.getModule("gradle-launcher").getAllRequiredModules()) {
