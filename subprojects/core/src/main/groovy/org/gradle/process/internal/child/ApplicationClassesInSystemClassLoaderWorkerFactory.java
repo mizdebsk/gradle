@@ -16,8 +16,7 @@
 
 package org.gradle.process.internal.child;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.InputSupplier;
+import com.google.common.io.ByteSource;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.internal.ClassPathRegistry;
 import org.gradle.api.logging.Logger;
@@ -96,11 +95,11 @@ public class ApplicationClassesInSystemClassLoaderWorkerFactory implements Worke
             }
             outstr.close();
             final InputStream originalStdin = execSpec.getStandardInput();
-            InputStream input = ByteStreams.join(ByteStreams.newInputStreamSupplier(bytes.toByteArray()), new InputSupplier<InputStream>() {
-                public InputStream getInput() throws IOException {
+            InputStream input = ByteSource.concat(ByteSource.wrap(bytes.toByteArray()), new ByteSource() {
+                public InputStream openStream() throws IOException {
                     return originalStdin;
                 }
-            }).getInput();
+            }).openStream();
             execSpec.setStandardInput(input);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
