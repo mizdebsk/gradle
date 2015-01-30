@@ -66,12 +66,12 @@ libraries.logback_classic = dependencies.module('ch.qos.logback:logback-classic:
 }
 
 // Jetty
-libraries.servlet_api = "org.mortbay.jetty:servlet-api:2.5-20081211@jar"
-libraries.jetty_util = dependencies.module("org.mortbay.jetty:jetty-util:6.1.26") {
+libraries.servlet_api = "javax.servlet:javax.servlet-api"
+libraries.jetty_util = dependencies.module("org.eclipse.jetty:jetty-util") {
     dependency libraries.slf4j_api
     dependency libraries.servlet_api
 }
-libraries.jetty = dependencies.module("org.mortbay.jetty:jetty:6.1.26") {
+libraries.jetty = dependencies.module("org.eclipse.jetty:jetty-server") {
     dependency libraries.jetty_util
     dependency libraries.servlet_api
 }
