@@ -21,8 +21,6 @@ import org.gradle.test.fixtures.file.TestNameTestDirectoryProvider
 import org.junit.Rule
 import spock.lang.Specification
 
-import java.nio.charset.Charset
-
 class SimpleHttpFileServerFactoryTest extends Specification {
 
     @Rule TestNameTestDirectoryProvider tmp = new TestNameTestDirectoryProvider()
@@ -50,7 +48,6 @@ class SimpleHttpFileServerFactoryTest extends Specification {
         then:
         resource.getHeaderField("Content-Type") == "text/html"
         resource.getResponseCode() == 200
-        resource.getHeaderField("Content-Encoding") == Charset.defaultCharset().name()
         resource.content.text == "Some content here"
 
         cleanup:
