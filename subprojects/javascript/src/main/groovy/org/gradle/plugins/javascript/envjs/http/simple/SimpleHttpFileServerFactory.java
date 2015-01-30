@@ -16,43 +16,43 @@
 
 package org.gradle.plugins.javascript.envjs.http.simple;
 
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.internal.concurrent.Stoppable;
 import org.gradle.plugins.javascript.envjs.http.HttpFileServer;
 import org.gradle.plugins.javascript.envjs.http.HttpFileServerFactory;
-import org.gradle.plugins.javascript.envjs.http.simple.internal.SimpleFileServerContainer;
-import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerServer;
-import org.simpleframework.http.resource.FileContext;
-import org.simpleframework.transport.Server;
-import org.simpleframework.transport.connect.Connection;
-import org.simpleframework.transport.connect.SocketConnection;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 
 public class SimpleHttpFileServerFactory implements HttpFileServerFactory {
 
     public HttpFileServer start(File contentRoot, int port) {
-        Container container = new SimpleFileServerContainer(new FileContext(contentRoot));
-
         try {
-            final Server server = new ContainerServer(container);
-            Connection connection = new SocketConnection(server);
-            InetSocketAddress address = new InetSocketAddress(port);
-            InetSocketAddress usedAddress = (InetSocketAddress)connection.connect(address);
+            final Server server = new Server(8080);
 
-            return new SimpleHttpFileServer(contentRoot, usedAddress.getPort(), new Stoppable() {
+            ResourceHandler handler = new ResourceHandler();
+            handler.setResourceBase(contentRoot.getPath());
+
+            HandlerList handlers = new HandlerList();
+            handlers.setHandlers(new Handler[] { handler, new DefaultHandler() });
+            server.setHandler(handlers);
+
+            server.start();
+
+            return new SimpleHttpFileServer(contentRoot, port, new Stoppable() {
                 public void stop() {
                     try {
-                        server.stop();
-                    } catch (IOException e) {
+                        server.join();
+                    } catch (InterruptedException e) {
                         throw new UncheckedIOException(e);
                     }
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new UncheckedIOException(e);
         }
     }

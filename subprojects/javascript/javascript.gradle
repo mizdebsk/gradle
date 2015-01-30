@@ -19,7 +19,7 @@ dependencies {
 
     compile "org.mozilla:rhino:1.7R3"
     compile libraries.gson // used by JsHint
-    compile "org.simpleframework:simple:4.1.21" // used by http package in envjs
+    compile libraries.jetty // used by http package in envjs
     compile project(':core'), project(":plugins")
     compile libraries.inject
 
