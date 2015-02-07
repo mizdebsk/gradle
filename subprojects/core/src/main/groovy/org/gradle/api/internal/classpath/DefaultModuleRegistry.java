@@ -200,7 +200,7 @@ public class DefaultModuleRegistry implements ModuleRegistry, GradleDistribution
     }
 
     private File findModuleJar(String name) {
-        Pattern pattern = Pattern.compile(Pattern.quote(name) + "-\\d.+\\.jar");
+        Pattern pattern = Pattern.compile(Pattern.quote(name) + "(?:-\\d.+)?\\.jar");
         for (File libDir : libDirs) {
             for (File file : libDir.listFiles()) {
                 if (pattern.matcher(file.getName()).matches()) {
@@ -212,7 +212,7 @@ public class DefaultModuleRegistry implements ModuleRegistry, GradleDistribution
     }
 
     private File findExternalJar(String name) {
-        Pattern pattern = Pattern.compile(Pattern.quote(name) + "-\\d.+\\.jar");
+        Pattern pattern = Pattern.compile(Pattern.quote(name) + "(?:-\\d.+)?\\.jar");
         for (File file : classpath) {
             if (pattern.matcher(file.getName()).matches()) {
                 return file;

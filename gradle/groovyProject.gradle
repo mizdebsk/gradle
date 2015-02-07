@@ -1,4 +1,6 @@
 import java.util.jar.Attributes
+import java.nio.file.Files
+import java.nio.file.Paths
 
 apply plugin: 'groovy'
 
@@ -94,9 +96,18 @@ class ClasspathManifest extends DefaultTask {
     @Input
     Properties getProperties() {
         def properties = new Properties()
-        properties.runtime = input.fileCollection {
+        def spec = org.gradle.api.specs.Specs.convertClosureToSpec {
             (it instanceof ExternalDependency) || (it instanceof FileCollectionDependency)
-        }.collect {it.name}.join(',')
+        }
+        def artifacts = input.getResolvedConfiguration().getLenientConfiguration().getArtifacts(spec)
+        new File("deps").mkdirs()
+        artifacts.each {
+            def link = Paths.get("deps", it.getName() + '.jar')
+            if (!Files.exists(link)) {
+                Files.createSymbolicLink(link, it.getFile().getCanonicalFile().toPath())
+            }
+        }
+        properties.runtime = artifacts.collect { it.getName() + '.jar' }.join(',')
         properties.projects = input.allDependencies.withType(ProjectDependency).collect {it.dependencyProject.archivesBaseName}.join(',')
         return properties
     }
