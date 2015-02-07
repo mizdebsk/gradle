@@ -96,9 +96,11 @@ class ClasspathManifest extends DefaultTask {
     @Input
     Properties getProperties() {
         def properties = new Properties()
-        properties.runtime = input.fileCollection {
+        def spec = org.gradle.api.specs.Specs.convertClosureToSpec {
             (it instanceof ExternalDependency) || (it instanceof FileCollectionDependency)
-        }.collect { it.name }.join(',')
+        }
+        def artifacts = input.resolvedConfiguration.lenientConfiguration.getArtifacts(spec)
+        properties.runtime = artifacts.collect { it.file.canonicalFile.name }.join(',')
         properties.projects = input.allDependencies.withType(ProjectDependency).collect { it.dependencyProject.archivesBaseName }.join(',')
         return properties
     }

@@ -191,7 +191,7 @@ public class DefaultModuleRegistry implements ModuleRegistry {
     }
 
     private File findJar(String name) {
-        Pattern pattern = Pattern.compile(Pattern.quote(name) + "-\\d.+\\.jar");
+        Pattern pattern = Pattern.compile(Pattern.quote(name) + "(?:-\\d.+)?\\.jar");
         for (File libDir : gradleDistributionLocator.getLibDirs()) {
             for (File file : libDir.listFiles()) {
                 if (pattern.matcher(file.getName()).matches()) {
