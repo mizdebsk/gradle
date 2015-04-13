@@ -31,17 +31,17 @@ public class DefaultIvyModuleResolveMetaData extends AbstractModuleComponentReso
 
     public DefaultIvyModuleResolveMetaData(ModuleDescriptor moduleDescriptor) {
         super(moduleDescriptor);
-        this.extraInfo = moduleDescriptor.getExtraInfo();
+        this.extraInfo = (Map)moduleDescriptor.getExtraInfo();
     }
 
     public DefaultIvyModuleResolveMetaData(ModuleComponentIdentifier componentIdentifier, ModuleDescriptor moduleDescriptor) {
         super(DefaultModuleVersionIdentifier.newId(componentIdentifier), moduleDescriptor, componentIdentifier);
-        this.extraInfo = moduleDescriptor.getExtraInfo();
+        this.extraInfo = (Map)moduleDescriptor.getExtraInfo();
     }
 
     private DefaultIvyModuleResolveMetaData(ModuleVersionIdentifier identifier, ModuleDescriptor moduleDescriptor, ModuleComponentIdentifier componentIdentifier) {
         super(identifier, moduleDescriptor, componentIdentifier);
-        this.extraInfo = moduleDescriptor.getExtraInfo();
+        this.extraInfo = (Map)moduleDescriptor.getExtraInfo();
     }
 
     public DefaultIvyModuleResolveMetaData(ModuleComponentIdentifier componentIdentifier, Set<IvyArtifactName> artifacts) {

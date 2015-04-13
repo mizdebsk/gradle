@@ -1139,7 +1139,7 @@ public class IvyXmlModuleDescriptorParser extends AbstractModuleDescriptorParser
                 buffer = null;
                 state = State.INFO;
             } else if (state == State.EXTRA_INFO) {
-                getMd().getExtraInfo().put(new NamespaceId(uri, localName), buffer == null ? "" : buffer.toString());
+                ((Map)getMd().getExtraInfo()).put(new NamespaceId(uri, localName), buffer == null ? "" : buffer.toString());
                 buffer = null;
                 state = State.INFO;
             } else if (state == State.DESCRIPTION) {
