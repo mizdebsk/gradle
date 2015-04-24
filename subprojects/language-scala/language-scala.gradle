@@ -6,7 +6,6 @@ dependencies {
     compile project(":languageJava")
     compile project(":languageJvm")
     // keep in sync with ScalaLanguagePlugin code
-    provided("com.typesafe.zinc:zinc:0.3.0")
 
     testCompile libraries.groovy
 }
