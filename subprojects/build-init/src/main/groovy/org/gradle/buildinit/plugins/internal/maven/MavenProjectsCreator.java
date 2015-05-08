@@ -25,12 +25,13 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.util.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.gradle.util.CollectionUtils;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class MavenProjectsCreator {
     private Set<MavenProject> createNow(Settings settings, File pomFile) throws PlexusContainerException, PlexusConfigurationException, ComponentLookupException, MavenExecutionRequestPopulationException, ProjectBuildingException {
         ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
                 .setClassWorld(new ClassWorld("plexus.core", ClassWorld.class.getClassLoader()))
-                .setName("mavenCore");
+                .setName("mavenCore").setAutoWiring(true).setClassPathScanning(PlexusConstants.SCANNING_INDEX);
 
         DefaultPlexusContainer container = new DefaultPlexusContainer(containerConfiguration);
         ProjectBuilder builder = container.lookup(ProjectBuilder.class);

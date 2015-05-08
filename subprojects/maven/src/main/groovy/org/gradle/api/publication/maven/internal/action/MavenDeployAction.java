@@ -19,14 +19,16 @@ import java.io.File;
 import java.util.Collection;
 
 import org.apache.maven.artifact.ant.RemoteRepository;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.deployment.DeployRequest;
-import org.sonatype.aether.deployment.DeploymentException;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.Proxy;
-import org.sonatype.aether.util.repository.DefaultProxySelector;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.deployment.DeploymentException;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.Proxy;
+import org.eclipse.aether.repository.RemoteRepository.Builder;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
+import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.gradle.api.GradleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,7 @@ public class MavenDeployAction extends AbstractMavenPublishAction {
             throw new GradleException("Must specify a repository for deployment");
         }
 
-        org.sonatype.aether.repository.RemoteRepository aetherRepo = createRepository(gradleRepo);
+        org.eclipse.aether.repository.RemoteRepository aetherRepo = createRepository(gradleRepo);
 
         DeployRequest request = new DeployRequest();
         request.setRepository(aetherRepo);
@@ -75,23 +77,25 @@ public class MavenDeployAction extends AbstractMavenPublishAction {
         repositorySystem.deploy(session, request);
     }
 
-    private org.sonatype.aether.repository.RemoteRepository createRepository(RemoteRepository gradleRepo) {
-        org.sonatype.aether.repository.RemoteRepository repo = new org.sonatype.aether.repository.RemoteRepository("remote",
-                        gradleRepo.getLayout(), gradleRepo.getUrl());
+    private org.eclipse.aether.repository.RemoteRepository createRepository(RemoteRepository gradleRepo) {
+        Builder repoBuilder = new Builder("remote", gradleRepo.getLayout(), gradleRepo.getUrl());
 
         org.apache.maven.artifact.ant.Authentication auth = gradleRepo.getAuthentication();
         if (auth != null) {
-            repo.setAuthentication(new Authentication(auth.getUserName(), auth.getPassword(), auth.getPrivateKey(), auth.getPassphrase()));
+            AuthenticationBuilder authBuilder = new AuthenticationBuilder();
+            authBuilder.addUsername(auth.getUserName()).addPassword(auth.getPassword());
+            authBuilder.addPrivateKey(auth.getPrivateKey(), auth.getPassphrase());
+            repoBuilder.setAuthentication(authBuilder.build());
         }
 
         org.apache.maven.artifact.ant.Proxy proxy = gradleRepo.getProxy();
         if (proxy != null) {
             DefaultProxySelector proxySelector = new DefaultProxySelector();
-            Authentication proxyAuth = new Authentication(proxy.getUserName(), proxy.getPassword());
+            Authentication proxyAuth = new AuthenticationBuilder().addUsername(proxy.getUserName()).addPassword(proxy.getPassword()).build();
             proxySelector.add(new Proxy(proxy.getType(), proxy.getHost(), proxy.getPort(), proxyAuth), proxy.getNonProxyHosts());
-            repo.setProxy(proxySelector.getProxy(repo));
+            repoBuilder.setProxy(proxySelector.getProxy(repoBuilder.build()));
         }
 
-        return repo;
+        return repoBuilder.build();
     }
 }

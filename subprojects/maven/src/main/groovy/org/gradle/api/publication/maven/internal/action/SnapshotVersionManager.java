@@ -17,16 +17,16 @@
 package org.gradle.api.publication.maven.internal.action;
 
 import org.gradle.internal.UncheckedException;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.deployment.DeployRequest;
-import org.sonatype.aether.impl.MetadataGenerator;
-import org.sonatype.aether.impl.MetadataGeneratorFactory;
-import org.sonatype.aether.impl.internal.DefaultDeployer;
-import org.sonatype.aether.impl.internal.DefaultRepositorySystem;
-import org.sonatype.aether.installation.InstallRequest;
-import org.sonatype.aether.metadata.Metadata;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.impl.MetadataGenerator;
+import org.eclipse.aether.impl.MetadataGeneratorFactory;
+import org.eclipse.aether.internal.impl.DefaultDeployer;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
+import org.eclipse.aether.installation.InstallRequest;
+import org.eclipse.aether.metadata.Metadata;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -53,7 +53,7 @@ class SnapshotVersionManager implements MetadataGeneratorFactory, MetadataGenera
     }
 
     @Override
-    public int getPriority() {
+    public float getPriority() {
         return -100;
     }
 

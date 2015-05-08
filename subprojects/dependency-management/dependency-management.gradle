@@ -17,7 +17,6 @@ dependencies {
     compile libraries.ivy
     compile libraries.slf4j_api
     compile libraries.gson
-    runtime libraries.xbean //maven3 classes dependency
     runtime libraries.bouncycastle_provider
 
     compile libraries.maven3
