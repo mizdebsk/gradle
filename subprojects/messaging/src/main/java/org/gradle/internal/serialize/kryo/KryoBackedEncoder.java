@@ -78,7 +78,7 @@ public class KryoBackedEncoder extends AbstractEncoder implements FlushableEncod
      * Returns the total number of bytes written by this encoder, some of which is may still be buffered.
      */
     public int getWritePosition() {
-        return output.total();
+        return (int)output.total();
     }
 
     public void flush() {
