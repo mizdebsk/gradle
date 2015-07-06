@@ -18,9 +18,9 @@ package org.gradle.api.publication.maven.internal.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.aether.transfer.AbstractTransferListener;
-import org.sonatype.aether.transfer.TransferEvent;
-import org.sonatype.aether.transfer.TransferEvent.RequestType;
+import org.eclipse.aether.transfer.AbstractTransferListener;
+import org.eclipse.aether.transfer.TransferEvent;
+import org.eclipse.aether.transfer.TransferEvent.RequestType;
 
 class LoggingMavenTransferListener extends AbstractTransferListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingMavenTransferListener.class);
