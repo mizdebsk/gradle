@@ -18,21 +18,26 @@ package org.gradle.api.publication.maven.internal.action;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.gradle.api.GradleException;
 import org.gradle.internal.UncheckedException;
-import org.sonatype.aether.RepositoryException;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.artifact.ArtifactType;
-import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
-import org.sonatype.aether.util.DefaultRepositorySystemSession;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.RepositoryException;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactType;
+import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.io.File;
 import java.io.FileReader;
@@ -51,9 +56,8 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
 
     protected AbstractMavenPublishAction(File pomFile) {
         container = newPlexusContainer();
-        session = new MavenRepositorySystemSession();
+        session = MavenRepositorySystemUtils.newSession();
         session.setTransferListener(new LoggingMavenTransferListener());
-        session.getConfigProperties().put("maven.metadata.legacy", "true");
 
         Model pom = parsePom(pomFile);
         pomArtifact = new DefaultArtifact(pom.getGroupId(), pom.getArtifactId(), "pom", pom.getVersion()).setFile(pomFile);
@@ -61,7 +65,11 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
     }
 
     public void setLocalMavenRepositoryLocation(File localMavenRepository) {
-        session.setLocalRepositoryManager(new SimpleLocalRepositoryManager(localMavenRepository));
+        try {
+			session.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory().newInstance(session, new LocalRepository(localMavenRepository)));
+		} catch (NoLocalRepositoryManagerException e) {
+            throw UncheckedException.throwAsUncheckedException(e);
+		}
     }
 
     public void setMainArtifact(File file) {
@@ -96,7 +104,10 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
 
     private PlexusContainer newPlexusContainer() {
         try {
-            return new DefaultPlexusContainer();
+            ContainerConfiguration conf = new DefaultContainerConfiguration();
+            conf.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
+            conf.setAutoWiring(true);
+            return new DefaultPlexusContainer(conf);
         } catch (PlexusContainerException e) {
             throw UncheckedException.throwAsUncheckedException(e);
         }
