@@ -115,12 +115,18 @@ libraries += [
 libraries.maven3 = dependencies.module("org.apache.maven:maven-core:${versions.maven}") {
     dependency "org.apache.maven:maven-settings:${versions.maven}@jar"
     dependency "org.apache.maven:maven-settings-builder:${versions.maven}@jar"
+    dependency "org.apache.maven:maven-builder-support:${versions.maven}@jar"
+
+    //sisu:
+    dependency "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.0@jar"
+    dependency "org.eclipse.sisu:org.eclipse.sisu.inject:0.3.0@jar"
+    dependency "org.sonatype.sisu:sisu-guice:3.2.5:no_aop@jar"
+    dependency "javax.inject:javax.inject:1@jar"
 
     //plexus:
     dependency "org.codehaus.plexus:plexus-utils:2.0.6@jar"
     dependency "org.codehaus.plexus:plexus-interpolation:1.14@jar"
     dependency "org.codehaus.plexus:plexus-component-annotations:1.5.5@jar"
-    dependency "org.codehaus.plexus:plexus-container-default:1.5.5@jar"
     dependency "org.codehaus.plexus:plexus-classworlds:2.4@jar"
 
     //sonatype plexus
@@ -142,14 +148,17 @@ libraries.maven3 = dependencies.module("org.apache.maven:maven-core:${versions.m
     dependency 'org.apache.maven.wagon:wagon-file:2.4@jar'
     dependency 'org.apache.maven.wagon:wagon-http:2.4@jar'
     dependency 'org.apache.maven.wagon:wagon-provider-api:2.4@jar'
-    dependency 'org.apache.maven.wagon:wagon-http-shared4:2.4@jar'
+    dependency 'org.apache.maven.wagon:wagon-http-shared:2.4@jar'
 
     //eather:
-    dependency "org.sonatype.aether:aether-api:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-impl:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-spi:1.13.1@jar"
-    dependency "org.sonatype.aether:aether-util:1.13.1@jar"
-    dependency 'org.sonatype.aether:aether-connector-wagon:1.13.1@jar'
+    dependency "org.eclipse.aether:aether-api:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-impl:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-spi:1.0.0.v20140518@jar"
+    dependency "org.eclipse.aether:aether-util:1.0.0.v20140518@jar"
+    dependency 'org.eclipse.aether:aether-connector-basic:1.0.0.v20140518@jar'
+    dependency 'org.eclipse.aether:aether-transport-wagon:1.0.0.v20140518@jar'
+
+    dependency 'org.apache.commons:commons-lang3:3.4@jar'
 }
 
 libraries.spock = [

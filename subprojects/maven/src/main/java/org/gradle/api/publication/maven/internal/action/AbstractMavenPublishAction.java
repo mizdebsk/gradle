@@ -18,11 +18,11 @@ package org.gradle.api.publication.maven.internal.action;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
-import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -30,16 +30,16 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.gradle.api.GradleException;
 import org.gradle.internal.UncheckedException;
-import org.sonatype.aether.RepositoryException;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.artifact.ArtifactType;
-import org.sonatype.aether.impl.Deployer;
-import org.sonatype.aether.impl.internal.DefaultDeployer;
-import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
-import org.sonatype.aether.util.DefaultRepositorySystemSession;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.RepositoryException;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactType;
+import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.io.File;
 import java.io.FileReader;
@@ -60,9 +60,8 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
 
     protected AbstractMavenPublishAction(File pomFile, List<File> wagonJars) {
         container = newPlexusContainer(wagonJars);
-        session = new MavenRepositorySystemSession();
+        session = MavenRepositorySystemUtils.newSession();
         session.setTransferListener(new LoggingMavenTransferListener());
-        session.getConfigProperties().put("maven.metadata.legacy", "true");
 
         Model pom = parsePom(pomFile);
         pomArtifact = new DefaultArtifact(pom.getGroupId(), pom.getArtifactId(), "pom", pom.getVersion()).setFile(pomFile);
@@ -70,7 +69,11 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
     }
 
     public void setLocalMavenRepositoryLocation(File localMavenRepository) {
-        session.setLocalRepositoryManager(new SimpleLocalRepositoryManager(localMavenRepository));
+        try {
+            session.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory().newInstance(session, new LocalRepository(localMavenRepository)));
+        } catch (NoLocalRepositoryManagerException e) {
+            throw UncheckedException.throwAsUncheckedException(e);
+        }
     }
 
     public void setMainArtifact(File file) {
@@ -117,7 +120,11 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
                     classRealm.addURL(jar.toURI().toURL());
                 }
             }
-            return new DefaultPlexusContainer(new DefaultContainerConfiguration().setRealm(classRealm));
+            ContainerConfiguration conf = new DefaultContainerConfiguration();
+            conf.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
+            conf.setAutoWiring(true);
+            conf.setRealm(classRealm);
+            return new DefaultPlexusContainer(conf);
         } catch (PlexusContainerException e) {
             throw UncheckedException.throwAsUncheckedException(e);
         } catch (MalformedURLException e) {
@@ -127,14 +134,6 @@ abstract class AbstractMavenPublishAction implements MavenPublishAction {
 
     private RepositorySystem newRepositorySystem() {
         try {
-            DefaultDeployer deployer = (DefaultDeployer) getContainer().lookup(Deployer.class);
-            // This is a workaround for https://issues.gradle.org/browse/GRADLE-3324.
-            // Somehow the ArrayList 'result' in `org.sonatype.aether.impl.internal.Utils#sortMetadataGeneratorFactories` ends up
-            // being a list of nulls on windows and IBM's 1.6 JDK.
-            deployer.setMetadataFactories(null);
-            deployer.addMetadataGeneratorFactory(new VersionsMetadataGeneratorFactory());
-            deployer.addMetadataGeneratorFactory(new SnapshotMetadataGeneratorFactory());
-            deployer.addMetadataGeneratorFactory(snapshotVersionManager);
             return container.lookup(RepositorySystem.class);
         } catch (ComponentLookupException e) {
             throw UncheckedException.throwAsUncheckedException(e);
