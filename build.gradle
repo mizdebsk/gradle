@@ -152,14 +152,12 @@ ext {
         project(it)
     }
     publishedProjects = [
-        project(':core'),
-        project(':toolingApi'),
-        project(':wrapper'),
-        project(':baseServices'),
-        project(':baseServicesGroovy'),
-        project(':messaging'),
-        project(':resources')
-    ]
+        'baseServices', 'baseServicesGroovy', 'cli', 'core', 'docs',
+        'launcher', 'messaging', 'modelCore', 'modelGroovy', 'native',
+        'openApi', 'resources', 'toolingApi', 'ui', 'wrapper'
+    ].collect {
+        project(it)
+    } + pluginProjects
 }
 
 apply from: "gradle/buildReceipt.gradle"
