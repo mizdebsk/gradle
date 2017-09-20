@@ -211,15 +211,11 @@ subprojects {
         apply from: "$rootDir/gradle/groovyProject.gradle"
         apply from: "$rootDir/gradle/testWithUnknownOS.gradle"
         apply from: "$rootDir/gradle/java9.gradle"
-        check.dependsOn ":docs:checkstyleApi"
-        check.dependsOn "codeQuality"
     }
 
     if (project in publishedProjects) {
         apply from: "$rootDir/gradle/publish.gradle"
     }
-
-    apply from: "$rootDir/gradle/codeQuality.gradle"
 }
 
 configurations {
