@@ -102,10 +102,6 @@ if (file("src/performanceTest").exists()) {
     apply from: "$rootDir/gradle/performanceTest.gradle"
 }
 
-if (file("src/jmh").exists()) {
-    apply from: "$rootDir/gradle/jmh.gradle"
-}
-
 apply from: "$rootDir/gradle/distributionTesting.gradle"
 apply from: "$rootDir/gradle/intTestImage.gradle"
 

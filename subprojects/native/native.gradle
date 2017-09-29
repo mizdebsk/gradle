@@ -19,14 +19,6 @@ useTestFixtures()
 useTestFixtures(project: ":logging")
 useClassycle()
 
-jmh {
-    fork = 1
-    threads = 2
-    warmupIterations = 10
-    synchronizeIterations = false
-    resultFormat = 'CSV'
-}
-
 task copyJmhReport(type: Copy) {
     destinationDir = file("$buildDir/reports/jmh-html")
 

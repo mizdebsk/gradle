@@ -16,12 +16,6 @@ dependencies {
     implementation libraries.commons_lang
     implementation libraries.commons_io
     implementation libraries.jcip
-
-    jmh libraries.bouncycastle_provider
-}
-
-jmh {
-    include = ["HashingAlgorithmsBenchmark"]
 }
 
 task buildReceiptResource(type: Copy) {
