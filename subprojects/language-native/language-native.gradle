@@ -18,8 +18,6 @@ dependencies {
     compile project(':core')
     compile project(':platformNative')
     compile project(':maven')
-
-    integTestRuntime project(":ideNative")
 }
 
 useTestFixtures()

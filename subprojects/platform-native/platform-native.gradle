@@ -22,8 +22,6 @@ dependencies {
     compile project(':diagnostics')
 
     integTestRuntime project(':maven')
-    // Required to test visual studio project file generation for generated sources
-    integTestRuntime project(':ideNative')
 
     testFixturesCompile project(':internalIntegTesting')
 }
