@@ -248,18 +248,11 @@ configurations {
     }
 }
 
-def patchedExternalModulesDir = new File(buildDir, "external/files")
-def patchedExternalModules = files({ -> fileTree(patchedExternalModulesDir).files.sort() })
-patchedExternalModules.builtBy 'patchExternalModules'
-
 dependencies {
-    externalModules "org.gradle:gradle-kotlin-dsl:${versions.gradle_kotlin_dsl}"
-    externalModules "org.gradle:gradle-kotlin-dsl-tooling-builders:${versions.gradle_kotlin_dsl}"
     coreRuntime project(':launcher')
     coreRuntime project(':runtimeApiInfo')
     runtime project(':wrapper')
     runtime project(":installationBeacon")
-    runtime patchedExternalModules
     gradlePlugins pluginProjects
     gradlePlugins implementationPluginProjects
     gradlePlugins project(':workers')
@@ -269,17 +262,9 @@ dependencies {
     coreRuntimeExtensions project(':dependencyManagement') //See: DynamicModulesClassPathProvider.GRADLE_EXTENSION_MODULES
     coreRuntimeExtensions project(':pluginUse')
     coreRuntimeExtensions project(':workers')
-    coreRuntimeExtensions patchedExternalModules
 }
 
 import org.gradle.modules.PatchExternalModules
-
-task patchExternalModules(type: PatchExternalModules) {
-    allModules = configurations.externalModulesRuntime
-    coreModules = configurations.coreRuntime
-    modulesToPatch = configurations.externalModules
-    destination = patchedExternalModulesDir
-}
 
 task verifyIsProductionBuildEnvironment {
     doLast {
