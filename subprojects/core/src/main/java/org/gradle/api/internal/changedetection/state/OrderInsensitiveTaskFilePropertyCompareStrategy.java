@@ -17,7 +17,6 @@
 package org.gradle.api.internal.changedetection.state;
 
 import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
@@ -143,7 +142,7 @@ class OrderInsensitiveTaskFilePropertyCompareStrategy implements TaskFilePropert
                 // Create a single iterator to use for all of the still unaccounted files
                 if (unaccountedForPreviousSnapshotsIterator == null) {
                     if (unaccountedForPreviousSnapshots.isEmpty()) {
-                        unaccountedForPreviousSnapshotsIterator = Iterators.emptyIterator();
+                        unaccountedForPreviousSnapshotsIterator = Collections.emptyIterator();
                     } else {
                         List<Entry<NormalizedFileSnapshot, IncrementalFileSnapshotWithAbsolutePath>> entries = Lists.newArrayList(unaccountedForPreviousSnapshots.entries());
                         Collections.sort(entries, ENTRY_COMPARATOR);

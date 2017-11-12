@@ -32,6 +32,7 @@ import org.gradle.util.ConfigureUtil;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class DefaultDomainObjectCollection<T> extends AbstractCollection<T> implements DomainObjectCollection<T>, WithEstimatedSize {
@@ -107,7 +108,7 @@ public class DefaultDomainObjectCollection<T> extends AbstractCollection<T> impl
 
     public Iterator<T> iterator() {
         if (constantTimeIsEmpty()) {
-            return Iterators.emptyIterator();
+            return Collections.emptyIterator();
         }
         return new IteratorImpl(getStore().iterator());
     }

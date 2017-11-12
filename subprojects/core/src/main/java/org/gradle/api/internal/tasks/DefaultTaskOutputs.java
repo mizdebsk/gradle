@@ -41,6 +41,7 @@ import org.gradle.api.tasks.TaskOutputFilePropertyBuilder;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,7 +204,7 @@ public class DefaultTaskOutputs implements TaskOutputsInternal {
                         if (propertySpec instanceof CacheableTaskOutputFilePropertySpec) {
                             File outputFile = ((CacheableTaskOutputFilePropertySpec) propertySpec).getOutputFile();
                             if (outputFile == null) {
-                                return Iterators.emptyIterator();
+                                return Collections.emptyIterator();
                             }
                         }
                         return Iterators.singletonIterator((TaskOutputFilePropertySpec) propertySpec);

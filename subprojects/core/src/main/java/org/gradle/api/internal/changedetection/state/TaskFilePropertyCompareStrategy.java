@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static com.google.common.collect.Iterators.emptyIterator;
+import static java.util.Collections.emptyIterator;
 import static com.google.common.collect.Iterators.singletonIterator;
 
 public enum TaskFilePropertyCompareStrategy {

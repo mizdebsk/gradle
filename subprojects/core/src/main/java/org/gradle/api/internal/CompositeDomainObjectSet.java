@@ -24,6 +24,7 @@ import org.gradle.api.specs.Spec;
 import org.gradle.internal.Actions;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -109,7 +110,7 @@ public class CompositeDomainObjectSet<T> extends DelegatingDomainObjectSet<T> im
     public Iterator<T> iterator() {
         DomainObjectCompositeCollection store = getStore();
         if (store.isEmpty()) {
-            return Iterators.emptyIterator();
+            return Collections.emptyIterator();
         }
         return SetIterator.of(store);
 
@@ -190,7 +191,7 @@ public class CompositeDomainObjectSet<T> extends DelegatingDomainObjectSet<T> im
         @SuppressWarnings("unchecked")
         public Iterator<T> iterator() {
             if (store.isEmpty()) {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             }
             if (store.size() == 1) {
                 return (Iterator<T>) store.get(0).iterator();

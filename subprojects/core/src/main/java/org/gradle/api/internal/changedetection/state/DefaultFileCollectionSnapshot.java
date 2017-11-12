@@ -36,6 +36,7 @@ import org.gradle.internal.serialize.HashCodeSerializer;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class DefaultFileCollectionSnapshot implements FileCollectionSnapshot {
     @Override
     public Iterator<TaskStateChange> iterateContentChangesSince(FileCollectionSnapshot oldSnapshot, String fileType, boolean includeAdded) {
         if (includeAdded && hashCode != null && getHash().equals(oldSnapshot.getHash())) {
-            return Iterators.emptyIterator();
+            return Collections.emptyIterator();
         }
         return compareStrategy.iterateContentChangesSince(snapshots, oldSnapshot.getSnapshots(), fileType, pathIsAbsolute, includeAdded);
     }

@@ -17,7 +17,6 @@
 package org.gradle.api.internal.tasks;
 
 import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import org.gradle.api.NonNullApi;
 import org.gradle.api.internal.file.FileCollectionInternal;
@@ -28,6 +27,7 @@ import org.gradle.api.internal.file.collections.DirectoryFileTree;
 import org.gradle.util.DeferredUtil;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class CompositeTaskOutputPropertySpec extends AbstractTaskOutputPropertyS
     public Iterator<TaskOutputFilePropertySpec> resolveToOutputProperties() {
         Object unpackedPaths = DeferredUtil.unpack(paths);
         if (unpackedPaths == null) {
-            return Iterators.emptyIterator();
+            return Collections.emptyIterator();
         } else if (unpackedPaths instanceof Map) {
             final Iterator<? extends Map.Entry<?, ?>> iterator = ((Map<?, ?>) unpackedPaths).entrySet().iterator();
             return new AbstractIterator<TaskOutputFilePropertySpec>() {

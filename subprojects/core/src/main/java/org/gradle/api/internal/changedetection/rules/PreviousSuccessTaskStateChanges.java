@@ -21,6 +21,7 @@ import org.gradle.api.internal.TaskInternal;
 import org.gradle.api.internal.changedetection.state.TaskExecution;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class PreviousSuccessTaskStateChanges implements TaskStateChanges {
@@ -38,7 +39,7 @@ public class PreviousSuccessTaskStateChanges implements TaskStateChanges {
     @Override
     public Iterator<TaskStateChange> iterator() {
         if (previousExecution == null || previousExecution.isSuccessful()) {
-            return Iterators.emptyIterator();
+            return Collections.emptyIterator();
         } else {
             return Iterators.singletonIterator(PREVIOUS_FAILURE);
         }
