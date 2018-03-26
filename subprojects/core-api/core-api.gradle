@@ -15,7 +15,7 @@
  */
 apply plugin: 'java-library'
 
-sourceCompatibility = javaVersion.java9Compatible ? 1.6 : 1.5
+sourceCompatibility = 8
 
 dependencies {
     api project(":baseServices")

@@ -16,7 +16,7 @@
 apply plugin: 'java-library'
 apply from: "$rootDir/gradle/taskProperties.gradle"
 
-sourceCompatibility = javaVersion.java9Compatible ? 1.6 : 1.5
+sourceCompatibility = 8
 
 configurations {
     reports
